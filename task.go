@@ -2,7 +2,7 @@ package zendesk
 
 import "time"
 
-type CreateTaskRequest struct {
+type CreateTaskOptions struct {
 	Content      string `json:"content"`
 	DueDate      string `json:"due_date"`
 	OwnerID      int64  `json:"owner_id"`
@@ -31,4 +31,8 @@ type CreateTaskResponse struct {
 	Meta struct {
 		Type string `json:"type"`
 	} `json:"meta"`
+}
+
+func (z *API) CreateTask(options *CreateTaskOptions) {
+	z.createRequest("POST", "/v2/tasks", options).execute()
 }

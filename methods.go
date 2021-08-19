@@ -20,7 +20,7 @@ func (z *API) Configure(baseURL, token string) {
 	z.ResponseBytes = make([]byte, 0)
 }
 
-func (z *API) NewRequest(method, endpoint string, payload interface{}) *API {
+func (z *API) createRequest(method, endpoint string, payload interface{}) *API {
 	prefixSlash := ""
 	if !strings.HasPrefix(endpoint, "/") {
 		prefixSlash = "/"
@@ -51,7 +51,7 @@ func (z *API) NewRequest(method, endpoint string, payload interface{}) *API {
 	return z
 }
 
-func (z *API) Execute() {
+func (z *API) execute() {
 	if z.Request == nil {
 		z.Error = errors.New("no valid request found")
 		return
