@@ -11,7 +11,12 @@ type CreateTaskOptions struct {
 	Completed    bool   `json:"completed"`
 	RemindAt     string `json:"remind_at"`
 }
-
+type createTaskRequest struct {
+	Data CreateTaskOptions `json:"data"`
+	Meta struct{
+		Type string `json:"type"`
+	}
+}
 type CreateTaskResponse struct {
 	Data struct {
 		ID           int64      `json:"id"`
@@ -34,5 +39,12 @@ type CreateTaskResponse struct {
 }
 
 func (z *API) CreateTask(options *CreateTaskOptions) {
-	z.createRequest("POST", "/v2/tasks", options).execute()
+	if options == nil {
+		return
+	}
+	body := createTaskRequest{
+		Data: *options,
+	}
+	body.Meta.Type = "task"
+	z.createRequest("POST", "/v2/tasks", body).execute()
 }
