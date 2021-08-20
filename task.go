@@ -1,6 +1,25 @@
 package zendesk
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
+
+func (z *API) CreateTask(options *CreateTaskOptions) (task *CreateTaskResponse, err error) {
+	if options == nil {
+		return
+	}
+	body := createTaskRequest{
+		Data: *options,
+	}
+	body.Meta.Type = "task"
+	z.createRequest("POST", TasksBaseEndpoint, body).execute()
+	if z.Error != nil {
+		return nil, z.Error
+	}
+	err = json.Unmarshal(z.ResponseBytes, &task)
+	return
+}
 
 type CreateTaskOptions struct {
 	Content      string `json:"content"`
@@ -13,7 +32,7 @@ type CreateTaskOptions struct {
 }
 type createTaskRequest struct {
 	Data CreateTaskOptions `json:"data"`
-	Meta struct{
+	Meta struct {
 		Type string `json:"type"`
 	}
 }
@@ -36,15 +55,4 @@ type CreateTaskResponse struct {
 	Meta struct {
 		Type string `json:"type"`
 	} `json:"meta"`
-}
-
-func (z *API) CreateTask(options *CreateTaskOptions) {
-	if options == nil {
-		return
-	}
-	body := createTaskRequest{
-		Data: *options,
-	}
-	body.Meta.Type = "task"
-	z.createRequest("POST", "/v2/tasks", body).execute()
 }

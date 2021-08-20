@@ -52,10 +52,14 @@ func (z *API) createRequest(method, endpoint string, payload interface{}) *API {
 }
 
 func (z *API) execute() {
-	if z.Request == nil {
-		z.Error = errors.New("no valid request found")
+	if z.Error != nil {
 		return
 	}
+	if z.Request == nil {
+		z.Error = errors.New("no request found")
+		return
+	}
+	z.Error = nil
 	client := &http.Client{}
 	z.Response, z.Error = client.Do(z.Request)
 	if z.Error != nil {
