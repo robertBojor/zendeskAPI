@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/pkg/errors"
 )
 
@@ -73,6 +75,9 @@ func (z *API) GetDeals(options *GetDealsOptions) (deals *GetDealsResponse, err e
 		encodedURLValues = urlValues.Encode()
 		if encodedURLValues != "" {
 			urlValuesPrefix = "?"
+		}
+		if z.debug {
+			logrus.Infof("✅ Prepared the encoded URL values - %s", encodedURLValues)
 		}
 	}
 	endpoint := fmt.Sprintf("%s%s%s", DealsBaseEndpoint, urlValuesPrefix, encodedURLValues)
